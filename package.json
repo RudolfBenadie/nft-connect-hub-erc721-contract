@@ -1,13 +1,9 @@
 {
-  "name": "@hashlips-lab/nft-erc721-collection",
-  "description": "An all-in-one solution for ERC721 collections.",
-  "author": "Marco Lipparini <developer@liarco.net>",
+  "name": "nft-connect-hub-erc721-contract",
+  "description": "ERC721 contract and DAPP solution for NFT collections.",
+  "author": "NFT Connect Hub",
   "license": "MIT",
-  "version": "2.4.4",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/hashlips-lab/nft-erc721-collection.git"
-  },
+  "version": "1.0.0",
   "scripts": {
     "build-dapp": "cd smart-contract; yarn; yarn compile; cd ../minting-dapp; yarn; yarn build"
   }
