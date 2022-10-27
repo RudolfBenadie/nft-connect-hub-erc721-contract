@@ -1,5 +1,5 @@
 {
-  "name": "@hashlips-lab/nft-erc721-collection-smart-contract",
+  "name": "nft-connect-erc721-smart-contract",
   "version": "0.0.0",
   "private": true,
   "devDependencies": {
