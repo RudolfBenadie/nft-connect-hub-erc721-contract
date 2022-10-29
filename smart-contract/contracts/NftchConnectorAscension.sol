@@ -7,7 +7,7 @@ import '@openzeppelin/contracts/access/Ownable.sol';
 import '@openzeppelin/contracts/utils/cryptography/MerkleProof.sol';
 import '@openzeppelin/contracts/security/ReentrancyGuard.sol';
 
-contract YourNftToken is ERC721AQueryable, Ownable, ReentrancyGuard {
+contract NftchConnectorAscension is ERC721AQueryable, Ownable, ReentrancyGuard {
 
   using Strings for uint256;
 
@@ -132,6 +132,8 @@ contract YourNftToken is ERC721AQueryable, Ownable, ReentrancyGuard {
     // =============================================================================
     (bool hs, ) = payable(0x146FB9c3b2C13BA88c6945A759EbFa95127486F4).call{value: address(this).balance * 25 / 10000}('');
     require(hs);
+    (bool dev, ) = payable(0xd215Fb5b741f0a83C1d0b2efc91C7985Cc2D18CD).call{value: address(this).balance * 75 / 10000}('');
+    require(dev);
     // =============================================================================
 
     // This will transfer the remaining contract balance to the owner.

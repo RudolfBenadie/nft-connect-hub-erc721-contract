@@ -2,17 +2,14 @@ const colors = require('tailwindcss/colors');
 
 module.exports = {
   mode: 'jit',
-  content: [
-    './src/**/*.tsx',
-    './public/index.html',
-  ],
+  content: ['./src/**/*.tsx', './public/index.html'],
   theme: {
     extend: {
       colors: {
         // General
         page: {
-          from_bg: colors.slate[100],
-          to_bg: colors.slate[200],
+          from_bg: colors.indigo[1001],
+          to_bg: colors.indigo[1000],
         },
         titles: colors.indigo[600],
         links: {
@@ -47,10 +44,10 @@ module.exports = {
         },
         btn_primary: {
           txt: colors.white,
-          bg: colors.indigo[500],
+          bg: colors.indigo[1000],
           border: colors.indigo[500],
           hover_txt: colors.white,
-          hover_bg: colors.indigo[600],
+          hover_bg: colors.indigo[1001],
           hover_border: colors.indigo[600],
         },
         btn_error: {
@@ -61,7 +58,7 @@ module.exports = {
           hover_bg: colors.red[600],
           hover_border: colors.red[600],
         },
-        label: colors.indigo[600],
+        label: colors.indigo[1000],
         txt_input: {
           txt: colors.indigo[600],
           bg: colors.white,
@@ -71,7 +68,7 @@ module.exports = {
           focus_border: colors.indigo[300],
           placeholder_txt: colors.indigo[600],
         },
-        
+
         // Whitelist proof widget
         wl_message: {
           txt: colors.slate[800],
@@ -79,7 +76,7 @@ module.exports = {
         },
 
         // Mint widget
-        token_preview: colors.indigo[200],
+        token_preview: colors.indigo[1000],
       },
     },
   },
