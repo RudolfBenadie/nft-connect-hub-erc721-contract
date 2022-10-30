@@ -12,21 +12,21 @@ const CollectionConfig: CollectionConfigInterface = {
   contractName: "NftchConnectorAscension",
   tokenName: "NFT Connect Hub - Genesis collection",
   tokenSymbol: "NFTCHGC",
-  hiddenMetadataUri: "ipfs://QmZLBk1KriuvQtt3FnHTkVt3XovtiPpB6FhRaGpfyTANGY/Guess Who.json",
+  hiddenMetadataUri: "ipfs://QmUyaRiBARaej5pJhjy92GyUUC2eSaZ3nt3dNjuKATVeBY/Guess Who.json",
   maxSupply: 20,
-  whitelistSale: {
-    price: 0,
-    maxMintAmountPerTx: 1,
+  restrictedSale: {
+    price: 0.02,
+    maxMintAmountPerTx: 10,
   },
   preSale: {
-    price: 0.000025,
+    price: 0.02,
     maxMintAmountPerTx: 10,
   },
   publicSale: {
-    price: 0.00005,
+    price: 0.03,
     maxMintAmountPerTx: 10,
   },
-  contractAddress: "0x9338ec005b52e14eF87A9388A4b40321C14c3524",
+  contractAddress: "0xc9EB034Fd9ABE25C3187B8a4ce87405FC8d08e13",
   marketplaceIdentifier: "nftch-genesis",
   marketplaceConfig: Marketplaces.openSea,
   whitelistAddresses,

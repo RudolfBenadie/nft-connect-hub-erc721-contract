@@ -1,11 +1,12 @@
 import React from 'react';
 
 interface Props {
-  userAddress: string|null;
+  userAddress: string | null;
   totalSupply: number;
   maxSupply: number;
   isPaused: boolean;
-  isWhitelistMintEnabled: boolean;
+  isRestrictedMintEnabled: boolean;
+  isRestrictedPresaleMintEnabled: boolean;
   isUserInWhitelist: boolean;
   isSoldOut: boolean;
 }
@@ -23,9 +24,8 @@ export default class CollectionStatus extends React.Component<Props, State> {
     this.state = defaultState;
   }
 
-  private isSaleOpen(): boolean
-  {
-    return (this.props.isWhitelistMintEnabled || !this.props.isPaused) && !this.props.isSoldOut;
+  private isSaleOpen(): boolean {
+    return (this.props.isRestrictedMintEnabled || !this.props.isPaused) && !this.props.isSoldOut;
   }
 
   render() {
@@ -36,7 +36,7 @@ export default class CollectionStatus extends React.Component<Props, State> {
             <span className="label">Wallet address:</span>
             <span className="address">{this.props.userAddress}</span>
           </div>
-          
+
           <div className="supply">
             <span className="label">Supply</span>
             {this.props.totalSupply}/{this.props.maxSupply}
@@ -46,7 +46,7 @@ export default class CollectionStatus extends React.Component<Props, State> {
             <span className="label">Sale status</span>
             {this.isSaleOpen() ?
               <>
-                {this.props.isWhitelistMintEnabled ? 'Whitelist only' : 'Open'}
+                {this.props.isRestrictedMintEnabled ? 'OG Connector' : 'Open'}
               </>
               :
               'Closed'

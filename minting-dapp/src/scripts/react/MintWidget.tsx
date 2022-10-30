@@ -10,7 +10,8 @@ interface Props {
   maxMintAmountPerTx: number;
   isPaused: boolean;
   loading: boolean;
-  isWhitelistMintEnabled: boolean;
+  isRestrictedMintEnabled: boolean;
+  isRestrictedPresaleMintEnabled: boolean;
   isUserInWhitelist: boolean;
   mintTokens(mintAmount: number): Promise<void>;
   whitelistMintTokens(mintAmount: number): Promise<void>;
@@ -32,11 +33,11 @@ export default class MintWidget extends React.Component<Props, State> {
   }
 
   private canMint(): boolean {
-    return !this.props.isPaused || this.canWhitelistMint();
+    return !this.props.isPaused || this.canRestrictedMint();
   }
 
-  private canWhitelistMint(): boolean {
-    return this.props.isWhitelistMintEnabled && this.props.isUserInWhitelist;
+  private canRestrictedMint(): boolean {
+    return this.props.isRestrictedMintEnabled && this.props.isUserInWhitelist;
   }
 
   private incrementMintAmount(): void {
@@ -71,7 +72,7 @@ export default class MintWidget extends React.Component<Props, State> {
             </div>
 
             <div className="price">
-              <strong>Total price:</strong> {utils.formatEther(this.props.tokenPrice.mul(this.state.mintAmount))} {this.props.networkConfig.symbol}
+              <strong>Total price:</strong> {utils.formatEther(this.props.tokenPrice.mul(this.state.mintAmount).sub(this.props.tokenPrice))} {this.props.networkConfig.symbol}
             </div>
 
             <div className="controls">
@@ -85,7 +86,7 @@ export default class MintWidget extends React.Component<Props, State> {
           <div className="cannot-mint">
             <span className="emoji">⏳</span>
 
-            {this.props.isWhitelistMintEnabled ? <>You are not included in the <strong>whitelist</strong>.</> : <>The contract is <strong>paused</strong>.</>}<br />
+            {this.props.isRestrictedMintEnabled ? <>You are not included in the <strong>OG Connector</strong>.</> : <>The contract is <strong>paused</strong>.</>}<br />
             Please come back during the next sale!
           </div>
         }

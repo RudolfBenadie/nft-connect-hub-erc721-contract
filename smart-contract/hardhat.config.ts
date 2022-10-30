@@ -35,10 +35,10 @@ task('accounts', 'Prints the list of accounts', async (taskArgs, hre) => {
   }
 });
 
-task('generate-root-hash', 'Generates and prints out the root hash for the current whitelist', async () => {
+task('generate-root-hash', 'Generates and prints out the root hash for the current restricted list', async () => {
   // Check configuration
   if (CollectionConfig.whitelistAddresses.length < 1) {
-    throw 'The whitelist is empty, please add some addresses to the configuration.';
+    throw 'The restricted list is empty, please add some addresses to the configuration.';
   }
 
   // Build the Merkle Tree
@@ -46,13 +46,13 @@ task('generate-root-hash', 'Generates and prints out the root hash for the curre
   const merkleTree = new MerkleTree(leafNodes, keccak256, { sortPairs: true });
   const rootHash = '0x' + merkleTree.getRoot().toString('hex');
 
-  console.log('The Merkle Tree root hash for the current whitelist is: ' + rootHash);
+  console.log('The Merkle Tree root hash for the current restricted list is: ' + rootHash);
 });
 
-task('generate-proof', 'Generates and prints out the whitelist proof for the given address (compatible with block explorers such as Etherscan)', async (taskArgs: {address: string}) => {
+task('generate-proof', 'Generates and prints out the restricted list proof for the given address (compatible with block explorers such as Etherscan)', async (taskArgs: { address: string }) => {
   // Check configuration
   if (CollectionConfig.whitelistAddresses.length < 1) {
-    throw 'The whitelist is empty, please add some addresses to the configuration.';
+    throw 'The restricted list is empty, please add some addresses to the configuration.';
   }
 
   // Build the Merkle Tree
@@ -60,11 +60,11 @@ task('generate-proof', 'Generates and prints out the whitelist proof for the giv
   const merkleTree = new MerkleTree(leafNodes, keccak256, { sortPairs: true });
   const proof = merkleTree.getHexProof(keccak256(taskArgs.address)).toString().replace(/'/g, '').replace(/ /g, '');
 
-  console.log('The whitelist proof for the given address is: ' + proof);
+  console.log('The restricted list proof for the given address is: ' + proof);
 })
-.addPositionalParam('address', 'The public address');
+  .addPositionalParam('address', 'The public address');
 
-task('rename-contract', 'Renames the smart contract replacing all occurrences in source files', async (taskArgs: {newName: string}, hre) => {
+task('rename-contract', 'Renames the smart contract replacing all occurrences in source files', async (taskArgs: { newName: string }, hre) => {
   // Validate new name
   if (!/^([A-Z][A-Za-z0-9]+)$/.test(taskArgs.newName)) {
     throw 'The contract name must be in PascalCase: https://en.wikipedia.org/wiki/Camel_case#Variations_and_synonyms';
@@ -95,7 +95,7 @@ task('rename-contract', 'Renames the smart contract replacing all occurrences in
   // Rebuilding types
   await hre.run('typechain');
 })
-.addPositionalParam('newName', 'The new name');
+  .addPositionalParam('newName', 'The new name');
 
 // You need to export an object to set up your config
 // Go to https://hardhat.org/config/ to learn more
@@ -159,8 +159,7 @@ export default config;
 /**
  * Replaces all occurrences of a string in the given file. 
  */
-function replaceInFile(file: string, search: string, replace: string): void
-{
+function replaceInFile(file: string, search: string, replace: string): void {
   const fileContent = fs.readFileSync(file, 'utf8').replace(new RegExp(search, 'g'), replace);
 
   fs.writeFileSync(file, fileContent, 'utf8');

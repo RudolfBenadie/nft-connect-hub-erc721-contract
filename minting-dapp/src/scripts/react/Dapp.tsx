@@ -1,5 +1,5 @@
 import React from 'react';
-import { ethers, BigNumber } from 'ethers'
+import { ethers, BigNumber, PayableOverrides } from 'ethers'
 import { ExternalProvider, Web3Provider } from '@ethersproject/providers';
 import detectEthereumProvider from '@metamask/detect-provider';
 import NftContractType from '../lib/NftContractType';
@@ -25,7 +25,8 @@ interface State {
   tokenPrice: BigNumber;
   isPaused: boolean;
   loading: boolean;
-  isWhitelistMintEnabled: boolean;
+  isRestrictedMintEnabled: boolean;
+  isRestrictedPresaleMintEnabled: boolean;
   isUserInWhitelist: boolean;
   merkleProofManualAddress: string;
   merkleProofManualAddressFeedbackMessage: string | JSX.Element | null;
@@ -42,7 +43,8 @@ const defaultState: State = {
   tokenPrice: BigNumber.from(0),
   isPaused: true,
   loading: false,
-  isWhitelistMintEnabled: false,
+  isRestrictedMintEnabled: false,
+  isRestrictedPresaleMintEnabled: false,
   isUserInWhitelist: false,
   merkleProofManualAddress: '',
   merkleProofManualAddressFeedbackMessage: null,
@@ -112,7 +114,8 @@ export default class Dapp extends React.Component<Props, State> {
   async whitelistMintTokens(amount: number): Promise<void> {
     try {
       this.setState({ loading: true });
-      const transaction = await this.contract.whitelistMint(amount, Whitelist.getProofForAddress(this.state.userAddress!), { value: this.state.tokenPrice.mul(amount) });
+      const value = this.state.tokenPrice.mul(amount).sub(this.state.tokenPrice);
+      const transaction = await this.contract.restrictedMint(amount, Whitelist.getProofForAddress(this.state.userAddress!), { value });
 
       toast.info(<>
         Transaction sent! Please wait...<br />
@@ -193,7 +196,8 @@ export default class Dapp extends React.Component<Props, State> {
                   maxSupply={this.state.maxSupply}
                   totalSupply={this.state.totalSupply}
                   isPaused={this.state.isPaused}
-                  isWhitelistMintEnabled={this.state.isWhitelistMintEnabled}
+                  isRestrictedMintEnabled={this.state.isRestrictedMintEnabled}
+                  isRestrictedPresaleMintEnabled={this.state.isRestrictedPresaleMintEnabled}
                   isUserInWhitelist={this.state.isUserInWhitelist}
                   isSoldOut={this.isSoldOut()}
                 />
@@ -205,7 +209,8 @@ export default class Dapp extends React.Component<Props, State> {
                     tokenPrice={this.state.tokenPrice}
                     maxMintAmountPerTx={this.state.maxMintAmountPerTx}
                     isPaused={this.state.isPaused}
-                    isWhitelistMintEnabled={this.state.isWhitelistMintEnabled}
+                    isRestrictedMintEnabled={this.state.isRestrictedMintEnabled}
+                    isRestrictedPresaleMintEnabled={this.state.isRestrictedPresaleMintEnabled}
                     isUserInWhitelist={this.state.isUserInWhitelist}
                     mintTokens={(mintAmount) => this.mintTokens(mintAmount)}
                     whitelistMintTokens={(mintAmount) => this.whitelistMintTokens(mintAmount)}
@@ -293,7 +298,8 @@ export default class Dapp extends React.Component<Props, State> {
       maxMintAmountPerTx: (await this.contract.maxMintAmountPerTx()).toNumber(),
       tokenPrice: await this.contract.cost(),
       isPaused: await this.contract.paused(),
-      isWhitelistMintEnabled: await this.contract.whitelistMintEnabled(),
+      isRestrictedMintEnabled: await this.contract.restrictedMintEnabled(),
+      isRestrictedPresaleMintEnabled: await this.contract.restrictedPresaleMintEnabled(),
       isUserInWhitelist: Whitelist.contains(this.state.userAddress ?? ''),
     });
   }
@@ -312,7 +318,7 @@ export default class Dapp extends React.Component<Props, State> {
 
     if (network.chainId === CollectionConfig.mainnet.chainId) {
       networkConfig = CollectionConfig.mainnet;
-    } else if (network.chainId === CollectionConfig.testnet.chainId) {
+    } else if (network.chainId === CollectionConfig.testnet.chainId || network.chainId === 1337) {
       networkConfig = CollectionConfig.testnet;
     } else {
       this.setError('Unsupported network!');

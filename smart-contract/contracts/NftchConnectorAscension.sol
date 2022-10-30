@@ -12,7 +12,7 @@ contract NftchConnectorAscension is ERC721AQueryable, Ownable, ReentrancyGuard {
   using Strings for uint256;
 
   bytes32 public merkleRoot;
-  mapping(address => bool) public whitelistClaimed;
+  mapping(address => bool) public restrictedClaimed;
 
   string public uriPrefix = '';
   string public uriSuffix = '.json';
@@ -23,7 +23,8 @@ contract NftchConnectorAscension is ERC721AQueryable, Ownable, ReentrancyGuard {
   uint256 public maxMintAmountPerTx;
 
   bool public paused = true;
-  bool public whitelistMintEnabled = false;
+  bool public restrictedMintEnabled = false;
+  bool public restrictedPresaleMintEnabled = false;
   bool public revealed = false;
 
   constructor(
@@ -47,18 +48,34 @@ contract NftchConnectorAscension is ERC721AQueryable, Ownable, ReentrancyGuard {
   }
 
   modifier mintPriceCompliance(uint256 _mintAmount) {
+    if (_mintAmount > 1 ) {
+      require(msg.value >= cost * _mintAmount - msg.value, 'Insufficient funds!');
+      _;
+    }
+  }
+
+  modifier presaleMintPriceCompliance(uint256 _mintAmount) {
     require(msg.value >= cost * _mintAmount, 'Insufficient funds!');
     _;
   }
 
-  function whitelistMint(uint256 _mintAmount, bytes32[] calldata _merkleProof) public payable mintCompliance(_mintAmount) mintPriceCompliance(_mintAmount) {
-    // Verify whitelist requirements
-    require(whitelistMintEnabled, 'The whitelist sale is not enabled!');
-    require(!whitelistClaimed[_msgSender()], 'Address already claimed!');
+  function restrictedMint(uint256 _mintAmount, bytes32[] calldata _merkleProof) public payable mintCompliance(_mintAmount) mintPriceCompliance(_mintAmount) {
+    // Verify restricted sale requirements
+    require(restrictedMintEnabled, 'The restricted sale is not enabled!');
+    require(!restrictedClaimed[_msgSender()], 'Address already claimed!');
     bytes32 leaf = keccak256(abi.encodePacked(_msgSender()));
     require(MerkleProof.verify(_merkleProof, merkleRoot, leaf), 'Invalid proof!');
 
-    whitelistClaimed[_msgSender()] = true;
+    restrictedClaimed[_msgSender()] = true;
+    _safeMint(_msgSender(), _mintAmount);
+  }
+
+  function restrictedPresaleMint(uint256 _mintAmount, bytes32[] calldata _merkleProof) public payable mintCompliance(_mintAmount) presaleMintPriceCompliance(_mintAmount) {
+    // Verify restricted presale requirements
+    require(restrictedPresaleMintEnabled, 'The restricted presale is not enabled!');
+    bytes32 leaf = keccak256(abi.encodePacked(_msgSender()));
+    require(MerkleProof.verify(_merkleProof, merkleRoot, leaf), 'Invalid proof!');
+
     _safeMint(_msgSender(), _mintAmount);
   }
 
@@ -121,8 +138,12 @@ contract NftchConnectorAscension is ERC721AQueryable, Ownable, ReentrancyGuard {
     merkleRoot = _merkleRoot;
   }
 
-  function setWhitelistMintEnabled(bool _state) public onlyOwner {
-    whitelistMintEnabled = _state;
+  function setRestrictedMintEnabled(bool _state) public onlyOwner {
+    restrictedMintEnabled = _state;
+  }
+
+  function setRestrictedPresaleMintEnabled(bool _state) public onlyOwner {
+    restrictedPresaleMintEnabled = _state;
   }
 
   function withdraw() public onlyOwner nonReentrant {

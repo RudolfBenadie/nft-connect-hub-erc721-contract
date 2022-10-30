@@ -6,8 +6,8 @@ async function main() {
   // Attach to deployed contract
   const contract = await NftContractProvider.getContract();
 
-  if (await contract.whitelistMintEnabled()) {
-    throw '\x1b[31merror\x1b[0m ' + 'Please close the whitelist sale before opening a public sale.';
+  if (await contract.restrictedMintEnabled()) {
+    throw '\x1b[31merror\x1b[0m ' + 'Please close the restricted sale before opening a public sale.';
   }
 
   // Update sale price (if needed)
@@ -24,7 +24,7 @@ async function main() {
 
     await (await contract.setMaxMintAmountPerTx(CollectionConfig.publicSale.maxMintAmountPerTx)).wait();
   }
-  
+
   // Unpause the contract (if needed)
   if (await contract.paused()) {
     console.log('Unpausing the contract...');

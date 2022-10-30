@@ -69,7 +69,7 @@ module.exports = {
           placeholder_txt: colors.indigo[600],
         },
 
-        // Whitelist proof widget
+        // Restricted proof widget
         wl_message: {
           txt: colors.slate[800],
           bg: colors.indigo[100],
