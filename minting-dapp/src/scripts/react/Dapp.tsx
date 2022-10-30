@@ -67,18 +67,6 @@ export default class Dapp extends React.Component<Props, State> {
   componentDidMount = async () => {
     const browserProvider = await detectEthereumProvider() as ExternalProvider;
 
-    // if (browserProvider?.isMetaMask !== true) {
-    //   this.setError(
-    //     <>
-    //       We were not able to detect <strong>MetaMask</strong>. We value <strong>privacy and security</strong> a lot so we limit the wallet options on the DAPP.<br />
-    //       <br />
-    //       But don't worry! <span className="emoji">😃</span> You can always interact with the smart-contract through <a href={this.generateContractUrl()} target="_blank">{this.state.networkConfig.blockExplorer.name}</a> and <strong>we do our best to provide you with the best user experience possible</strong>, even from there.<br />
-    //       <br />
-    //       You can also get your <strong>Whitelist Proof</strong> manually, using the tool below.
-    //     </>,
-    //   );
-    // }
-
     this.provider = new ethers.providers.Web3Provider(browserProvider);
 
     this.registerWalletEvents(browserProvider);
@@ -111,11 +99,37 @@ export default class Dapp extends React.Component<Props, State> {
     }
   }
 
-  async whitelistMintTokens(amount: number): Promise<void> {
+  async restrictedMintTokens(amount: number): Promise<void> {
     try {
       this.setState({ loading: true });
       const value = this.state.tokenPrice.mul(amount).sub(this.state.tokenPrice);
       const transaction = await this.contract.restrictedMint(amount, Whitelist.getProofForAddress(this.state.userAddress!), { value });
+
+      toast.info(<>
+        Transaction sent! Please wait...<br />
+        <a href={this.generateTransactionUrl(transaction.hash)} target="_blank" rel="noopener">View on {this.state.networkConfig.blockExplorer.name}</a>
+      </>);
+
+      const receipt = await transaction.wait();
+
+      toast.success(<>
+        Success!<br />
+        <a href={this.generateTransactionUrl(receipt.transactionHash)} target="_blank" rel="noopener">View on {this.state.networkConfig.blockExplorer.name}</a>
+      </>);
+
+      this.refreshContractState();
+      this.setState({ loading: false });
+    } catch (e) {
+      this.setError(e);
+      this.setState({ loading: false });
+    }
+  }
+
+  async restrictedPresaleMintTokens(amount: number): Promise<void> {
+    try {
+      this.setState({ loading: true });
+      const value = this.state.tokenPrice.mul(amount).sub(this.state.tokenPrice);
+      const transaction = await this.contract.restrictedPresaleMint(amount, Whitelist.getProofForAddress(this.state.userAddress!), { value });
 
       toast.info(<>
         Transaction sent! Please wait...<br />
@@ -158,7 +172,7 @@ export default class Dapp extends React.Component<Props, State> {
 
     if (merkleProof.length < 1) {
       this.setState({
-        merkleProofManualAddressFeedbackMessage: 'The given address is not in the whitelist, please double-check.',
+        merkleProofManualAddressFeedbackMessage: 'The given address is not in the restricted list, please double-check.',
       });
 
       return;
@@ -213,7 +227,8 @@ export default class Dapp extends React.Component<Props, State> {
                     isRestrictedPresaleMintEnabled={this.state.isRestrictedPresaleMintEnabled}
                     isUserInWhitelist={this.state.isUserInWhitelist}
                     mintTokens={(mintAmount) => this.mintTokens(mintAmount)}
-                    whitelistMintTokens={(mintAmount) => this.whitelistMintTokens(mintAmount)}
+                    restrictedMintTokens={(mintAmount) => this.restrictedMintTokens(mintAmount)}
+                    restrictedPresaleMintTokens={(mintAmount) => this.restrictedPresaleMintTokens(mintAmount)}
                     loading={this.state.loading}
                   />
                   :

@@ -25,7 +25,7 @@ export default class CollectionStatus extends React.Component<Props, State> {
   }
 
   private isSaleOpen(): boolean {
-    return (this.props.isRestrictedMintEnabled || !this.props.isPaused) && !this.props.isSoldOut;
+    return (this.props.isRestrictedMintEnabled || this.props.isRestrictedPresaleMintEnabled || !this.props.isPaused) && !this.props.isSoldOut;
   }
 
   render() {
@@ -46,7 +46,7 @@ export default class CollectionStatus extends React.Component<Props, State> {
             <span className="label">Sale status</span>
             {this.isSaleOpen() ?
               <>
-                {this.props.isRestrictedMintEnabled ? 'OG Connector' : 'Open'}
+                {this.props.isRestrictedMintEnabled ? 'OG Connector' : this.props.isRestrictedPresaleMintEnabled ? 'Connect presale' : 'Open'}
               </>
               :
               'Closed'

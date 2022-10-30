@@ -14,7 +14,8 @@ interface Props {
   isRestrictedPresaleMintEnabled: boolean;
   isUserInWhitelist: boolean;
   mintTokens(mintAmount: number): Promise<void>;
-  whitelistMintTokens(mintAmount: number): Promise<void>;
+  restrictedMintTokens(mintAmount: number): Promise<void>;
+  restrictedPresaleMintTokens(mintAmount: number): Promise<void>;
 }
 
 interface State {
@@ -37,7 +38,7 @@ export default class MintWidget extends React.Component<Props, State> {
   }
 
   private canRestrictedMint(): boolean {
-    return this.props.isRestrictedMintEnabled && this.props.isUserInWhitelist;
+    return (this.props.isRestrictedMintEnabled || this.props.isRestrictedPresaleMintEnabled) && this.props.isUserInWhitelist;
   }
 
   private incrementMintAmount(): void {
@@ -58,8 +59,10 @@ export default class MintWidget extends React.Component<Props, State> {
 
       return;
     }
-
-    await this.props.whitelistMintTokens(this.state.mintAmount);
+    if (this.props.isRestrictedMintEnabled)
+      await this.props.restrictedMintTokens(this.state.mintAmount);
+    if (this.props.isRestrictedPresaleMintEnabled)
+      await this.props.restrictedPresaleMintTokens(this.state.mintAmount);
   }
 
   render() {
@@ -86,7 +89,12 @@ export default class MintWidget extends React.Component<Props, State> {
           <div className="cannot-mint">
             <span className="emoji">⏳</span>
 
-            {this.props.isRestrictedMintEnabled ? <>You are not included in the <strong>OG Connector</strong>.</> : <>The contract is <strong>paused</strong>.</>}<br />
+            {this.props.isRestrictedMintEnabled
+              ? <>You do not have an <strong>OG Connector role</strong>.</>
+              : this.props.isRestrictedPresaleMintEnabled
+                ? <>You are not included in the <strong>Connect presale list</strong>.</>
+                : <>The contract is <strong>paused</strong>.</>
+            }<br />
             Please come back during the next sale!
           </div>
         }
