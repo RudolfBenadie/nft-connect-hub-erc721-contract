@@ -9,7 +9,7 @@ const CollectionConfig: CollectionConfigInterface = {
   // The contract name can be updated using the following command:
   // yarn rename-contract NEW_CONTRACT_NAME
   // Please DO NOT change it manually!
-  contractName: "NftchConnectorAscension",
+  contractName: "NFTConnectHub",
   tokenName: "NFT Connect Hub - Genesis collection",
   tokenSymbol: "NFTCHGC",
   hiddenMetadataUri: "ipfs://QmUyaRiBARaej5pJhjy92GyUUC2eSaZ3nt3dNjuKATVeBY/Guess Who.json",
