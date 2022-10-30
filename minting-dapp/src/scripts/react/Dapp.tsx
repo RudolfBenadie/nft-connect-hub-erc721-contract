@@ -333,7 +333,7 @@ export default class Dapp extends React.Component<Props, State> {
 
     if (network.chainId === CollectionConfig.mainnet.chainId) {
       networkConfig = CollectionConfig.mainnet;
-    } else if (network.chainId === CollectionConfig.testnet.chainId || network.chainId === 1337) {
+    } else if (network.chainId === CollectionConfig.testnet.chainId) {
       networkConfig = CollectionConfig.testnet;
     } else {
       this.setError('Unsupported network!');
