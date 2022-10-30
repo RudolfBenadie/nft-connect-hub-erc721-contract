@@ -54,15 +54,15 @@ export default class MintWidget extends React.Component<Props, State> {
   }
 
   private async mint(): Promise<void> {
+    if (this.props.isRestrictedMintEnabled)
+      await this.props.restrictedMintTokens(this.state.mintAmount);
+    if (this.props.isRestrictedPresaleMintEnabled)
+      await this.props.restrictedPresaleMintTokens(this.state.mintAmount);
     if (!this.props.isPaused) {
       await this.props.mintTokens(this.state.mintAmount);
 
       return;
     }
-    if (this.props.isRestrictedMintEnabled)
-      await this.props.restrictedMintTokens(this.state.mintAmount);
-    if (this.props.isRestrictedPresaleMintEnabled)
-      await this.props.restrictedPresaleMintTokens(this.state.mintAmount);
   }
 
   render() {
@@ -75,7 +75,11 @@ export default class MintWidget extends React.Component<Props, State> {
             </div>
 
             <div className="price">
-              <strong>Total price:</strong> {utils.formatEther(this.props.tokenPrice.mul(this.state.mintAmount).sub(this.props.tokenPrice))} {this.props.networkConfig.symbol}
+              {this.props.isRestrictedMintEnabled
+                ? <><strong>Total price:</strong> {utils.formatEther(this.props.tokenPrice.mul(this.state.mintAmount).sub(this.props.tokenPrice))}</>
+                : <><strong>Total price:</strong> {utils.formatEther(this.props.tokenPrice.mul(this.state.mintAmount))}</>
+              }
+              {this.props.networkConfig.symbol}
             </div>
 
             <div className="controls">

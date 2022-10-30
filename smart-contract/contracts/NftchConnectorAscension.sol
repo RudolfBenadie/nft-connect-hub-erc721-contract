@@ -47,11 +47,11 @@ contract NftchConnectorAscension is ERC721AQueryable, Ownable, ReentrancyGuard {
     _;
   }
 
-  modifier mintPriceCompliance(uint256 _mintAmount) {
+  modifier restrictedMintPriceCompliance(uint256 _mintAmount) {
     if (_mintAmount > 1 ) {
       require(msg.value >= cost * _mintAmount - msg.value, 'Insufficient funds!');
-      _;
     }
+    _;
   }
 
   modifier presaleMintPriceCompliance(uint256 _mintAmount) {
@@ -59,7 +59,12 @@ contract NftchConnectorAscension is ERC721AQueryable, Ownable, ReentrancyGuard {
     _;
   }
 
-  function restrictedMint(uint256 _mintAmount, bytes32[] calldata _merkleProof) public payable mintCompliance(_mintAmount) mintPriceCompliance(_mintAmount) {
+  modifier mintPriceCompliance(uint256 _mintAmount) {
+    require(msg.value >= cost * _mintAmount, 'Insufficient funds!');
+    _;
+  }
+
+  function restrictedMint(uint256 _mintAmount, bytes32[] calldata _merkleProof) public payable mintCompliance(_mintAmount) restrictedMintPriceCompliance(_mintAmount) {
     // Verify restricted sale requirements
     require(restrictedMintEnabled, 'The restricted sale is not enabled!');
     require(!restrictedClaimed[_msgSender()], 'Address already claimed!');

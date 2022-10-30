@@ -26,7 +26,7 @@ const CollectionConfig: CollectionConfigInterface = {
     price: 0.03,
     maxMintAmountPerTx: 10,
   },
-  contractAddress: "0xc9EB034Fd9ABE25C3187B8a4ce87405FC8d08e13",
+  contractAddress: "0xFbf67b52612233B8F646062841B88006f0A4c24F",
   marketplaceIdentifier: "nftch-genesis",
   marketplaceConfig: Marketplaces.openSea,
   whitelistAddresses,

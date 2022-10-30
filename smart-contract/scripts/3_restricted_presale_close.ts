@@ -5,7 +5,7 @@ async function main() {
   const contract = await NftContractProvider.getContract();
 
   // Disable restricted sale (if needed)
-  if (await contract.restrictedMintEnabled()) {
+  if (await contract.restrictedPresaleMintEnabled()) {
     console.log("Disabling restricted presale...");
 
     await (await contract.setRestrictedPresaleMintEnabled(false)).wait();
