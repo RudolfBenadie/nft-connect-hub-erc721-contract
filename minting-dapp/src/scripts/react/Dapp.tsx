@@ -76,7 +76,6 @@ export default class Dapp extends React.Component<Props, State> {
 
   async mintTokens(amount: number): Promise<void> {
     try {
-      alert("mintTokens called");
       this.setState({ loading: true });
       const transaction = await this.contract.mint(amount, { value: this.state.tokenPrice.mul(amount) });
 
@@ -128,7 +127,6 @@ export default class Dapp extends React.Component<Props, State> {
 
   async restrictedPresaleMintTokens(amount: number): Promise<void> {
     try {
-      alert("restrictedPresaleMintTokens called");
       this.setState({ loading: true });
       const value = this.state.tokenPrice.mul(amount);
       const transaction = await this.contract.restrictedPresaleMint(amount, Whitelist.getProofForAddress(this.state.userAddress!), { value });

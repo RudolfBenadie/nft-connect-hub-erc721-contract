@@ -9,11 +9,11 @@ const CollectionConfig: CollectionConfigInterface = {
   // The contract name can be updated using the following command:
   // yarn rename-contract NEW_CONTRACT_NAME
   // Please DO NOT change it manually!
-  contractName: "NftchConnectorAscension",
+  contractName: "NFTConnectHubGenesis",
   tokenName: "NFT Connect Hub - Genesis collection",
   tokenSymbol: "NFTCHGC",
   hiddenMetadataUri: "ipfs://QmUyaRiBARaej5pJhjy92GyUUC2eSaZ3nt3dNjuKATVeBY/Guess Who.json",
-  maxSupply: 20,
+  maxSupply: 3377,
   restrictedSale: {
     price: 0.02,
     maxMintAmountPerTx: 10,
@@ -26,7 +26,7 @@ const CollectionConfig: CollectionConfigInterface = {
     price: 0.03,
     maxMintAmountPerTx: 10,
   },
-  contractAddress: "0xFbf67b52612233B8F646062841B88006f0A4c24F",
+  contractAddress: "",
   marketplaceIdentifier: "nftch-genesis",
   marketplaceConfig: Marketplaces.openSea,
   whitelistAddresses,
