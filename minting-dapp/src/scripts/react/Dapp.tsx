@@ -252,7 +252,12 @@ export default class Dapp extends React.Component<Props, State> {
           </>
           :
           <div className="no-wallet">
-            {!this.isWalletConnected() ? <button className="primary" disabled={this.provider === undefined} onClick={() => this.connectWallet()}>Connect Wallet</button> : null}
+            {!this.provider
+              ? <button className="primary" onClick={event => window.location.href = 'dapp://nft-connect.web.app'}>Connect Wallet</button>
+              : !this.isWalletConnected()
+                ? <button className="primary" onClick={() => this.connectWallet()}>Connect Wallet</button>
+                : null
+            }
           </div>
         }
       </>
